@@ -1,5 +1,7 @@
-class releve():
+class cReleve:
     pass
 
-class sonde():
+
+class cSonde:
     pass
+

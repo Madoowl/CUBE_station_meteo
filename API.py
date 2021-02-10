@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_restplus import Resource, Api
-import datetime
+import time
 
 # Config Flask App Definition
 app = Flask(__name__)
@@ -19,8 +19,10 @@ class cTmpRel(Resource):
         if not data:
             data = {"response": "ERROR"}
             return data, 404
-        else:
+        else:  # renvoie des données et insertions dans DB
+            tmstmp = time.time()
             title = data.get('title')
+
             if title:
                 if mydb.books.find_one({"title": title}):
                     return {"response": "book already exists."}, 403

@@ -16,6 +16,7 @@ dbPort = "5432"
 # dbBase = "COMMANDES"  #  todo : create binds attached to specific tables or DB "https://flask-sqlalchemy.palletsprojects.com/en/2.x/binds/"
 # dbBase = "postgres"
 dbBase = "IOTPROD"
+dbSchema = "test"
 
 # dbString = f"{dbDialect}+{dbOrm}://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}"
 dbString = f'postgresql+psycopg2://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}'
@@ -23,10 +24,12 @@ dbString = f'postgresql+psycopg2://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBa
 # exploitation base
 
 engine = create_engine(dbString)
+conn = engine.connect()
+
 
 
 # mapping current DB from PG
-metadata = MetaData()
+metadata = MetaData(schema=dbSchema)
 metadata.reflect(engine)
 
 Base = automap_base(metadata=metadata)  # to map the current DB, specify metadata
@@ -41,17 +44,20 @@ Base.prepare(engine, reflect=True)  # ,only=['rdv_covid'] )
 # tableTest = Base.classes.clients
 
 #  tableTest = Base.classes.centrevaccin
-# tableTest = Table('centrevaccin', metadata, autoload_with=engine)  # force initialize table (when automap does not work well)
+# tableTest = Table('centrevaccin', metadata, autoload_with=engine)
+# force initialize table (when automap does not work well)
 # tableTest = Base.classes.rdvcovid
 
 # def tables
-tTmpRel = Table('t_temp_rel', metadata, autoload_with=engine)
+tTmpRel = Table('t_rel_test', metadata, autoload_with=engine)
 
 # init session
 session = Session(engine)  # create session
-newItem = tTmpRel(trelid="456",trelhumidity=2.3, treltemperature=3.4, sonid="45")
-#insert(tTmpRel).values(trelhumidity=2.3, treltemperature=3.4, sonid="45")
-session.add(newItem)
+# newItem = (insert(tTmpRel).values(relid="456", relhumidity=2.3, treltemperature=3.4))
+newItem = tTmpRel.insert().values(relid='456', relhumidity=2.30, reltemperature=3.40)
+print('hello')
+conn.execute(newItem)
+
 session.commit()
 
 
