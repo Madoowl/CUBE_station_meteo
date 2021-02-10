@@ -1,7 +1,7 @@
 # import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import Table, Column, String, MetaData
+from sqlalchemy import Table, Column, String, MetaData, insert
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
 import psycopg2
 from psycopg2 import Error
@@ -13,8 +13,9 @@ dbUser = "postgres"
 dbPassword = "test123"
 dbHost = "127.0.0.1"
 dbPort = "5432"
-#dbBase = "COMMANDES"
-dbBase = "postgres"
+# dbBase = "COMMANDES"  #  todo : create binds attached to specific tables or DB "https://flask-sqlalchemy.palletsprojects.com/en/2.x/binds/"
+# dbBase = "postgres"
+dbBase = "IOTPROD"
 
 # dbString = f"{dbDialect}+{dbOrm}://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}"
 dbString = f'postgresql+psycopg2://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}'
@@ -23,27 +24,42 @@ dbString = f'postgresql+psycopg2://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBa
 
 engine = create_engine(dbString)
 
-# mapping current DB from PG
-Base = automap_base()  # to map the current DB
-Base.prepare(engine, reflect=True)  # ,only=['rdv_covid'] )
 
-metadata = MetaData(engine)
+# mapping current DB from PG
+metadata = MetaData()
 metadata.reflect(engine)
 
-# lTablesNames = base.classes.keys()
+Base = automap_base(metadata=metadata)  # to map the current DB, specify metadata
+Base.prepare(engine, reflect=True)  # ,only=['rdv_covid'] )
+
+
+# lTablesNames = Base.classes.keys()
 
 # create object from DB
 
 # rdv_covid = Base.classes.rdv_covid
 # tableTest = Base.classes.clients
 
-tableTest = Base.classes.rdvcovid
+#  tableTest = Base.classes.centrevaccin
+# tableTest = Table('centrevaccin', metadata, autoload_with=engine)  # force initialize table (when automap does not work well)
+# tableTest = Base.classes.rdvcovid
 
-session = Session(engine)
+# def tables
+tTmpRel = Table('t_temp_rel', metadata, autoload_with=engine)
 
-query = session.query(tableTest).limit(4)
-for item in query:
-    print(item.nb)
+# init session
+session = Session(engine)  # create session
+newItem = tTmpRel(trelid="456",trelhumidity=2.3, treltemperature=3.4, sonid="45")
+#insert(tTmpRel).values(trelhumidity=2.3, treltemperature=3.4, sonid="45")
+session.add(newItem)
+session.commit()
+
+
+# query = session.query(tableTest).limit(4)
+# for item in query:
+#     print("Hello")
+#     # print(item.nom)
+#     print(item.nom)
 
 
 def get_tables(p_engine):
@@ -54,7 +70,7 @@ def get_tables(p_engine):
         pass
 
 
-print(engine.table_names())
+# print(engine.table_names())
 # print(metadata.tables.keys()) #quid many scheme?
 # # https://stackoverflow.com/questions/6473925/sqlalchemy-getting-a-list-of-tables
 # print(metadata.tables.values())
