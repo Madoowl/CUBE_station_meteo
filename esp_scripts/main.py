@@ -16,8 +16,11 @@ do_connect()
 i2c = I2C(-1, Pin(2), Pin(0))
 s = si7021.SI7021(i2c)
 delay = 2 #En secondes
-lcd = LCDI2C( i2c, cols=16, rows=2 )
-lcd.backlight()
+try:
+    lcd = LCDI2C( i2c, cols=16, rows=2 )
+    lcd.backlight()
+except OSError:
+    print('Pas d\'ecran')
 while True:
     print('T° : ' , s.temperature())
     print('Humidité : ' ,s.humidity(), '%')
@@ -25,12 +28,18 @@ while True:
     #print(response.text)
     #print(response.json())
     # Affiche un messagee (sans retour à la ligne automatique)
-    lcd.set_cursor( (0,0) )
-    lcd.print('T: ')
-    lcd.print(str(s.temperature()))
-    lcd.print('C ')
-    lcd.set_cursor( (0,1) )
-    lcd.print('H: ')
-    lcd.print(str(s.humidity()))
-    lcd.print('%')   
+    try:
+        lcd = LCDI2C( i2c, cols=16, rows=2 )
+        lcd.backlight()
+        lcd.set_cursor( (0,0) )
+        lcd.print('T: ')
+        lcd.print(str(s.temperature()))
+        lcd.print('C ')
+        lcd.set_cursor( (0,1) )
+        lcd.print('H: ')
+        lcd.print(str(s.humidity()))
+        lcd.print('%')
+    except OSError :
+        print('Pas d\'écran')
     time.sleep(delay)
+
