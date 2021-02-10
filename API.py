@@ -56,36 +56,38 @@ class cTmpRel(Resource):
         Add new rel to the DB """
 
         data = api.payload
-        if data == None :
+        if data is None:
             data = request.get_json()
-            print("passé par request")
-        print(data)
-        print(type(data))
         if not data:
             data = {"response": "ERROR"}
             return data, 404
-        else:  # renvoie des données et insertions dans DB
+        else:
+        #  get the average of value sended, insert to DB
             collecte = data
             cltHumidity = 0.0
             cltTemperature = 0.0
             i = 0
-
             while i <= (len(collecte) - 1):
                 # direct access to specific key to get corresponding values
                 cltHumidity += collecte[i].get('hum')
                 cltTemperature += collecte[i].get('temp')
                 i += 1
+
             moyHumidity = round(cltHumidity / len(collecte), 1)
             moyTemp = round(cltTemperature / len(collecte), 1)
 
+            #   specific table fron DB
             table = Table('t_rel_test', metadata, autoload_with=engine)
 
-            newItem = table.insert().values(relid=111, relhumidity=moyHumidity, reltemperature=moyTemp)
-
+            # sql command to insert values
+            newItem = table.insert().values(relid=111, reldatetime=time.time(), relhumidity=moyHumidity, reltemperature=moyTemp)
             print(str(newItem))
+
+            #  execute sql commands
             conn.execute(newItem)
             session.commit()
 
+            #  return message
             msg = {"response": "SUCCESS"}
             return msg, 200
 
