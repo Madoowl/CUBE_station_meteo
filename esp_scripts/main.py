@@ -1,7 +1,8 @@
 from machine import I2C, Pin
 import json
+import urequests as requests
 from lcpi2c import LCDI2C
-import network, urequests, utime, si7021, time
+import network, utime, si7021, time
 from time import sleep
 def do_connect():
     import network
@@ -24,20 +25,17 @@ except OSError:
     print('Pas d\'ecran')
 while True:
     superdata = []
-    i = 0
-    while i<=2 :
+    i = 1
+    while i % 5 != 0 :
         print('T° : ' , s.temperature())
         print('Humidité : ' ,s.humidity(), '%')
-        id = str(i)
-        data = {
-            "id" : i,
+        datas = {
             "temp": s.temperature(),
             "hum": s.humidity(),
             "delay": delay,           
             }
-        superdata.append(data)
+        superdata.append(datas)
         i = i + 1
-        # Affiche un messagee (sans retour à la ligne automatique)
         try:
             lcd = LCDI2C( i2c, cols=16, rows=2 )
             lcd.backlight()
@@ -51,7 +49,9 @@ while True:
             lcd.print('%')
         except OSError :
             print('Pas d\'écran')
-        time.sleep(delay)
-       
-    print(superdata)
-    response = urequests.post("http://jsonplaceholder.typicode.com/posts", data = str(superdata))
+        time.sleep(delay)   
+    print(json.dumps(superdata))
+    
+    url = "http://172.20.10.14:5000/api/tempRel/"
+    data = superdata
+    r = requests.post(url, json=data)
