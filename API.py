@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import Table, Column, String, MetaData, insert
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
+from datetime import datetime
+from sqlalchemy.sql import func
 import psycopg2
 from psycopg2 import Error
 
@@ -53,7 +55,9 @@ class cTmpRel(Resource):
     @api.response(400, 'API Ping: Error')
     def post(self):
         """
-        Add new rel to the DB """
+        Add new rel to the DB
+        """
+        # todo : put models to create a db and /or table if does not exist
 
         data = api.payload
         if data is None:
@@ -61,8 +65,9 @@ class cTmpRel(Resource):
         if not data:
             data = {"response": "ERROR"}
             return data, 404
+
         else:
-        #  get the average of value sended, insert to DB
+            #  get the average of value sended, insert to DB
             collecte = data
             cltHumidity = 0.0
             cltTemperature = 0.0
@@ -78,9 +83,12 @@ class cTmpRel(Resource):
 
             #   specific table fron DB
             table = Table('t_rel_test', metadata, autoload_with=engine)
-
+            timestamp = time.time()
+            print(timestamp)
+            datetime.fromtimestamp(timestamp)
+            print(timestamp)
             # sql command to insert values
-            newItem = table.insert().values(relid=111, reldatetime=time.time(), relhumidity=moyHumidity, reltemperature=moyTemp)
+            newItem = table.insert().values(relid=111, reldatetime=datetime.now(), relhumidity=moyHumidity, reltemperature=moyTemp)
             print(str(newItem))
 
             #  execute sql commands
