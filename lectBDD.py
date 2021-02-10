@@ -35,18 +35,7 @@ metadata.reflect(engine)
 Base = automap_base(metadata=metadata)  # to map the current DB, specify metadata
 Base.prepare(engine, reflect=True)  # ,only=['rdv_covid'] )
 
-
-# lTablesNames = Base.classes.keys()
-
 # create object from DB
-
-# rdv_covid = Base.classes.rdv_covid
-# tableTest = Base.classes.clients
-
-#  tableTest = Base.classes.centrevaccin
-# tableTest = Table('centrevaccin', metadata, autoload_with=engine)
-# force initialize table (when automap does not work well)
-# tableTest = Base.classes.rdvcovid
 
 # def tables
 tTmpRel = Table('t_rel_test', metadata, autoload_with=engine)

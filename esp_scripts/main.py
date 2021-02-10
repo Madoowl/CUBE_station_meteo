@@ -54,4 +54,4 @@ while True:
         time.sleep(delay)
        
     print(superdata)
-    response = urequests.post("http://jsonplaceholder.typicode.com/posts", data = str(superdata))
+    response = urequests.post
