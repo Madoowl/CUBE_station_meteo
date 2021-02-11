@@ -2,9 +2,8 @@
 /* Nom de SGBD :  PostgreSQL 8                                  */
 /* Date de création :  09/02/2021 15:01:46                      */
 /*==============================================================*/
-
-
-drop index EMET_FK;
+create database IOTPROD ;
+/*drop index EMET_FK;
 
 drop index T_RELEVE_PK;
 
@@ -18,7 +17,7 @@ drop index ENVOIE_FK;
 
 drop index T_TEMP_REL_PK;
 
-drop table T_TEMP_REL;
+drop table T_TEMP_REL;*/
 
 /*==============================================================*/
 /* Table : T_RELEVE                                             */
