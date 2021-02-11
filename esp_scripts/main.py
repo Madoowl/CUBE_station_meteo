@@ -50,6 +50,7 @@ delay = 5 #En secondes
 lcd = init_screen()
 while True:
     superdata = []
+    wlan = network.WLAN(network.STA_IF)
     i = 1
     print('T° : ' , s.temperature())
     print('Humidité : ' ,s.humidity(), '%')
@@ -71,7 +72,9 @@ while True:
             "serial": 1,
             "temp": s.temperature(),
             "hum": s.humidity(),
-            "delay": delay,           
+            "delay": delay,
+            "ip": wlan.ifconfig()
+                    
             }
         superdata.append(datas)
         i = i + 1
