@@ -1,4 +1,4 @@
-# import sqlalchemy
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import Table, Column, String, MetaData, insert
@@ -16,7 +16,7 @@ dbPort = "5432"
 # dbBase = "COMMANDES"  #  todo : create binds attached to specific tables or DB "https://flask-sqlalchemy.palletsprojects.com/en/2.x/binds/"
 # dbBase = "postgres"
 dbBase = "IOTPROD"
-dbSchema = "test"
+dbSchema = "public"
 
 # dbString = f"{dbDialect}+{dbOrm}://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}"
 dbString = f'postgresql+psycopg2://{dbUser}:{dbPassword}@{dbHost}:{dbPort}/{dbBase}'
@@ -39,15 +39,24 @@ Base.prepare(engine, reflect=True)  # ,only=['rdv_covid'] )
 
 # def tables
 tTmpRel = Table('t_rel_test', metadata, autoload_with=engine)
+tSonde = Table('t_sonde', metadata, autoload_with=engine)
 
 # init session
 session = Session(engine)  # create session
-# newItem = (insert(tTmpRel).values(relid="456", relhumidity=2.3, treltemperature=3.4))
-newItem = tTmpRel.insert().values(relid='456', relhumidity=2.30, reltemperature=3.40)
-print('hello')
-conn.execute(newItem)
 
-session.commit()
+query = sqlalchemy.select([tSonde])
+cursor = conn.execute(query)
+result = cursor.fetchall()
+
+print(result) #return result
+
+
+# # newItem = (insert(tTmpRel).values(relid="456", relhumidity=2.3, treltemperature=3.4))
+# newItem = tTmpRel.insert().values(relid='456', relhumidity=2.30, reltemperature=3.40)
+# print('hello')
+# conn.execute(newItem)
+#
+# session.commit()
 
 
 # query = session.query(tableTest).limit(4)
