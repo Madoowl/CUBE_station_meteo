@@ -69,6 +69,7 @@ class cTmpRel(Resource):
         # todo : put models to create a db and /or table if does not exist
 
         data = api.payload
+        print('réception de qqch')
         if data is None:
             data = request.get_json()
         if not data:
@@ -109,7 +110,7 @@ class cTmpRel(Resource):
 
 
             # sql command to insert values
-            newItem = table.insert().values(relid=111, sonid=idSonde, reldatetime=datetime.now(), relhumidity=moyHumidity, reltemperature=moyTemp)
+            newItem = table.insert().values(sonid=idSonde, reldatetime=datetime.now(), relhumidity=moyHumidity, reltemperature=moyTemp)
             print(str(newItem))
 
             #  execute sql commands
