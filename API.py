@@ -129,7 +129,7 @@ class cTmpRel(Resource):
         """
         try:
             table = Table(tReleve, metadata, autoload_with=engine)
-            querySQL =  "SELECT id, sonid, TO_CHAR(reldatetime, 'MON-DD-YYYY HH12:MIPM') datetime, reltemperature, relhumidity FROM test.t_rel_test ;"
+            querySQL =  "SELECT relid, sonid, TO_CHAR(reldatetime, 'MON-DD-YYYY HH12:MIPM') datetime, reltemperature, relhumidity FROM test.t_rel_test ;"
             #query = select([table])  #
             print("ici !")
             cursor = conn.execute(querySQL)
@@ -234,4 +234,4 @@ def getSonde(pIdSonde, pIpSonde,pTableSonde=tSonde):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5001', debug=True)
+    app.run(host='0.0.0.0', port='5000', debug=True)
