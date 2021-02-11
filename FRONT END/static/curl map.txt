@@ -1,0 +1,1 @@
+curl "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/2.3387,48.8582,2/400x300?access_token=pk.eyJ1IjoicGV0cmVscGllcnJlLWFsYWluIiwiYSI6ImNra3djc2wxbDFxNDAyd3BjYjZqYmZhZHUifQ.2zsID4nWrxHHBhN-6xTmcw" --output example-mapbox-static-4.jpg

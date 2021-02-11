@@ -1,0 +1,193 @@
+<!doctype html>
+
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Projet API</title>
+      <script src="../js/chart.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.css" integrity="sha512-C7hOmCgGzihKXzyPU/z4nv97W0d9bv4ALuuEbSf6hm93myico9qa0hv4dODThvCsqQUmKmLcJmlpRmCaApr83g==" crossorigin="anonymous" />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+      <link rel="stylesheet" href="{{url_for('static',filename = 'style.css')}}">
+      <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.0/mapbox-gl.js'></script>
+      
+      <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.0/mapbox-gl.css' rel='stylesheet' />
+    </head>
+    <body>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+      <h1 style="text-align: center;">Station météo groupe 4</h1>
+      <br><hr>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="row mx-auto" style="text-align: center;">
+              {% if temp %}
+              <h2>{{temp}}°C</h2>
+              dernier relevé :
+            {% else %}
+              <h2>99°C</h2>
+              <p>Dernier relevé : 10/02/2021 à 9h00</p>
+            {% endif %}    
+            </div>
+            <canvas id="myChart" style="max-width: 100%;"></canvas>
+            <canvas id="myChart1" style="max-width: 100%;"></canvas>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12" style="max-width: 100%; border-radius: 10%;">
+            <div class="card" style="max-width: 100%; background-repeat: no-repeat ;">
+              <div class="card-body" style="max-width: 100%;">
+                <p style="text-align: center;">Vos prévisions météo </p>
+                <div class="row">
+                  {% for content in contents%}
+
+                  <div class="card col-3">
+                    <div class="row">
+                      {% if loop.index == 1 %}
+                      {{ days[0].date}}
+                      {% elif loop.index == 2 %}
+                      {{ days[1].date}}
+                      {% elif loop.index == 3 %}
+                      {{ days[2].date}}
+                      {% elif loop.index == 4 %}
+                      {{ days[3].date}}
+                      {% elif loop.index == 5 %}
+                      {{ days[4].date}}
+                      {% elif loop.index == 6 %}
+                      {{ days[5].date}}
+                      {% elif loop.index == 7 %}
+                      {{ days[6].date}}
+                      {% elif loop.index == 8 %}
+                      {{ days[7].date}}
+                      {% else %}
+                      {% endif %}
+                    </div>
+                    <img src="http://openweathermap.org/img/wn/{{content.weather[0].icon}}@2x.png" alt="icon weather">
+                    <div class="row">
+                      <p><i class="fas fa-wind" style="max-width: 50%;"></i> {{(content.wind_speed * 1.61)|round}} km/h</p>
+                    </div>
+                    <div class="row">
+                      <p><i class="fas fa-tint" style="max-width: 50%;"></i> {{content.humidity}}%</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12" id="map">
+            </div>
+          </div>
+          <br><hr>
+          <div class="row">
+            <div class="btn-group">
+              <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Données jour précédent</button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Date 1</a>
+                <a class="dropdown-item" href="#">Date 2</a>
+                <a class="dropdown-item" href="#">Date 3</a>
+                <a class="dropdown-item" href="#">Date 4</a>
+                <a class="dropdown-item" href="#">Date 5</a>
+                <a class="dropdown-item" href="#">Date 6</a>
+                <a class="dropdown-item" href="#">Date 7</a>
+              </div>
+            </div>
+           <!--  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Partager sa météo</button> -->
+          </div>
+        </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Partagez votre météo ou vous souhaitez</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- A modifier l'image ne fonction de l'utilisateur-->
+        <img src="{{url_for('static',filename = 'img/World_map_green.png')}}" alt="image de map monde" style="max-width: 100%;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="mail" ><i class="fas fa-envelope"></i></button>
+        <button type="button" class="btn btn-primary" id="facebook"><i class="fab fa-facebook"></i></button>
+        <button type="button" class="btn btn-primary" id="instagram"><i class="fab fa-instagram"></i></button>
+        <button type="button" class="btn btn-primary"><i class="fab fa-twitter"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!------------------JAVASCRIPT---------------------------->
+
+      <!-- jeux de données fictifs -->
+      <script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var ctx1 = document.getElementById('myChart1').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: ['H-1', 'H-2', 'H-3', 'H-4', 'H-5', 'H-6', 'H-7'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: ['rgb(255,0,0)',
+            'rgb(255,0,0)',
+            'rgb(0,0,255)',
+            'rgb(0,0,255)',
+            'rgb(255,0,0)',
+            'rgb(255,0,0)',
+            'rgb(255,0,0)'
+          ],
+            borderColor: 'rgb(255, 99, 132)',
+            data: [2, 3, -2, -4, 3,1,0]
+        }
+      ]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+var chart1 = new Chart(ctx1, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['H-1', 'H-2', 'H-3', 'H-4', 'H-5', 'H-6', 'H-7'],
+        datasets: [{
+            label: '% humidité',
+            data: [65, 70, 65, 67, 63,61,70],
+            borderColor: 'rgb(255, 99, 132)',
+        }
+      ]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+      </script>
+                <script>
+          mapboxgl.accessToken = 'pk.eyJ1IjoicGV0cmVscGllcnJlLWFsYWluIiwiYSI6ImNra3djc2wxbDFxNDAyd3BjYjZqYmZhZHUifQ.2zsID4nWrxHHBhN-6xTmcw';
+          var lat = 49.38241; //'{{latitude}}';
+          var lng = 1.07442 ;//'{{longitude}}';
+          var map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [lng,lat],
+          zoom: 12
+          });
+          </script>
+
+</body>
+
+</html>
