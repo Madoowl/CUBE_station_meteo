@@ -128,7 +128,7 @@ class cTmpRel(Resource):
         return infos
         """
         try:
-            table = Table(tTest, metadata, autoload_with=engine)
+            table = Table(tReleve, metadata, autoload_with=engine)
             querySQL =  "SELECT id, sonid, TO_CHAR(reldatetime, 'MON-DD-YYYY HH12:MIPM') datetime, reltemperature, relhumidity FROM test.t_rel_test ;"
             #query = select([table])  #
             print("ici !")
@@ -151,6 +151,21 @@ class cTmpRel(Resource):
             msg = "Get problem, you've done something wrong, or our developers / Work in progress ! Schema not specified or no data"
             print(msg)
             return msg, 400
+
+@api.route("/api/sonde/")
+class cSonde(Resource):
+    def get(*param):
+        '''Retourne les données concernant une sonde'''
+        data = api.payload
+        print('réception demande données sur une sonde')
+        if data is None:
+            data = request.get_json()
+        if not data:
+            data = {"response": "ERROR"}
+            return data, 404
+
+
+
 
 
 def getSonde(pIdSonde, pIpSonde,pTableSonde=tSonde):
@@ -219,4 +234,4 @@ def getSonde(pIdSonde, pIpSonde,pTableSonde=tSonde):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5000', debug=True)
+    app.run(host='0.0.0.0', port='5001', debug=True)
